@@ -3,7 +3,7 @@ info:
   description: |
     Read-heavy weather/forecast/alerts API — a classic "tool" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server.
   title: Weather & Alerts API
-  version: 1.0.0
+  version: 2.0.0
 servers:
 - url: https://api.weather.example.com/v2
 paths:
@@ -86,9 +86,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: "#/components/schemas/ForecastDay"
-                type: array
+                $ref: "#/components/schemas/getWeatherForecast_200_response"
           description: Forecast days
       summary: Get a multi-day weather forecast
       x-accepts:
@@ -125,9 +123,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: "#/components/schemas/WeatherAlert"
-                type: array
+                $ref: "#/components/schemas/listActiveAlerts_200_response"
           description: Active alerts
       summary: List active weather alerts for a region
       x-accepts:
@@ -271,6 +267,46 @@ components:
         createdAt:
           format: date-time
           type: string
+      type: object
+    getWeatherForecast_200_response:
+      example:
+        forecastDays:
+        - date: 2000-01-23
+          condition: condition
+          precipitationChancePercent: 1
+          highC: 0.8008281904610115
+          lowC: 6.027456183070403
+        - date: 2000-01-23
+          condition: condition
+          precipitationChancePercent: 1
+          highC: 0.8008281904610115
+          lowC: 6.027456183070403
+      properties:
+        forecastDays:
+          items:
+            $ref: "#/components/schemas/ForecastDay"
+          type: array
+      type: object
+    listActiveAlerts_200_response:
+      example:
+        alerts:
+        - severity: MINOR
+          id: id
+          issuedAt: 2000-01-23T04:56:07.000+00:00
+          title: title
+          region: region
+          expiresAt: 2000-01-23T04:56:07.000+00:00
+        - severity: MINOR
+          id: id
+          issuedAt: 2000-01-23T04:56:07.000+00:00
+          title: title
+          region: region
+          expiresAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        alerts:
+          items:
+            $ref: "#/components/schemas/WeatherAlert"
+          type: array
       type: object
     subscribeToAlerts_request:
       properties:
