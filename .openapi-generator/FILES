@@ -10,6 +10,8 @@ docs/AlertSubscription.md
 docs/CurrentWeather.md
 docs/DefaultApi.md
 docs/ForecastDay.md
+docs/GetWeatherForecast200Response.md
+docs/ListActiveAlerts200Response.md
 docs/SubscribeToAlertsRequest.md
 docs/WeatherAlert.md
 git_push.sh
@@ -35,11 +37,15 @@ src/main/java/com/probestack/sdk/auth/HttpBearerAuth.java
 src/main/java/com/probestack/sdk/model/AlertSubscription.java
 src/main/java/com/probestack/sdk/model/CurrentWeather.java
 src/main/java/com/probestack/sdk/model/ForecastDay.java
+src/main/java/com/probestack/sdk/model/GetWeatherForecast200Response.java
+src/main/java/com/probestack/sdk/model/ListActiveAlerts200Response.java
 src/main/java/com/probestack/sdk/model/SubscribeToAlertsRequest.java
 src/main/java/com/probestack/sdk/model/WeatherAlert.java
 src/test/java/com/probestack/sdk/api/DefaultApiTest.java
 src/test/java/com/probestack/sdk/model/AlertSubscriptionTest.java
 src/test/java/com/probestack/sdk/model/CurrentWeatherTest.java
 src/test/java/com/probestack/sdk/model/ForecastDayTest.java
+src/test/java/com/probestack/sdk/model/GetWeatherForecast200ResponseTest.java
+src/test/java/com/probestack/sdk/model/ListActiveAlerts200ResponseTest.java
 src/test/java/com/probestack/sdk/model/SubscribeToAlertsRequestTest.java
 src/test/java/com/probestack/sdk/model/WeatherAlertTest.java
