@@ -18,7 +18,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:23:13.109827530Z[GMT]", comments = "Generator version: 7.9.0")public abstract class BaseApi {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:29:58.652364882Z[GMT]", comments = "Generator version: 7.9.0")public abstract class BaseApi {
 
     protected ApiClient apiClient;
 
