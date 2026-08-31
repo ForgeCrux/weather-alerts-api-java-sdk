@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   CurrentWeather.JSON_PROPERTY_HUMIDITY_PERCENT,
   CurrentWeather.JSON_PROPERTY_OBSERVED_AT
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:23:13.109827530Z[GMT]", comments = "Generator version: 7.9.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:29:58.652364882Z[GMT]", comments = "Generator version: 7.9.0")
 public class CurrentWeather {
   public static final String JSON_PROPERTY_LOCATION = "location";
   private String location;
