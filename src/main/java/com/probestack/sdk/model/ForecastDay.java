@@ -35,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   ForecastDay.JSON_PROPERTY_CONDITION,
   ForecastDay.JSON_PROPERTY_PRECIPITATION_CHANCE_PERCENT
 })
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:23:13.109827530Z[GMT]", comments = "Generator version: 7.9.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:29:58.652364882Z[GMT]", comments = "Generator version: 7.9.0")
 public class ForecastDay {
   public static final String JSON_PROPERTY_DATE = "date";
   private LocalDate date;
