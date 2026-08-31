@@ -84,7 +84,7 @@ No authorization required
 
 ## getWeatherForecast
 
-> List&lt;ForecastDay&gt; getWeatherForecast(lat, lon, days)
+> GetWeatherForecast200Response getWeatherForecast(lat, lon, days)
 
 Get a multi-day weather forecast
 
@@ -110,7 +110,7 @@ public class Example {
         BigDecimal lon = new BigDecimal(78); // BigDecimal | Longitude of the location
         Integer days = 5; // Integer | Number of forecast days to return (1-14)
         try {
-            List<ForecastDay> result = apiInstance.getWeatherForecast(lat, lon, days);
+            GetWeatherForecast200Response result = apiInstance.getWeatherForecast(lat, lon, days);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#getWeatherForecast");
@@ -134,7 +134,7 @@ public class Example {
 
 ### Return type
 
-[**List&lt;ForecastDay&gt;**](ForecastDay.md)
+[**GetWeatherForecast200Response**](GetWeatherForecast200Response.md)
 
 ### Authorization
 
@@ -154,7 +154,7 @@ No authorization required
 
 ## listActiveAlerts
 
-> List&lt;WeatherAlert&gt; listActiveAlerts(region, severity)
+> ListActiveAlerts200Response listActiveAlerts(region, severity)
 
 List active weather alerts for a region
 
@@ -179,7 +179,7 @@ public class Example {
         String region = "region_example"; // String | Region name or code to check for active alerts
         String severity = "MINOR"; // String | Minimum severity to include
         try {
-            List<WeatherAlert> result = apiInstance.listActiveAlerts(region, severity);
+            ListActiveAlerts200Response result = apiInstance.listActiveAlerts(region, severity);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#listActiveAlerts");
@@ -202,7 +202,7 @@ public class Example {
 
 ### Return type
 
-[**List&lt;WeatherAlert&gt;**](WeatherAlert.md)
+[**ListActiveAlerts200Response**](ListActiveAlerts200Response.md)
 
 ### Authorization
 
