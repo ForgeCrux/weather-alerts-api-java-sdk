@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   SubscribeToAlertsRequest.JSON_PROPERTY_MIN_SEVERITY
 })
 @JsonTypeName("subscribeToAlerts_request")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:23:13.109827530Z[GMT]", comments = "Generator version: 7.9.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:29:58.652364882Z[GMT]", comments = "Generator version: 7.9.0")
 public class SubscribeToAlertsRequest {
   public static final String JSON_PROPERTY_EMAIL = "email";
   private String email;
