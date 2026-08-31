@@ -4,7 +4,7 @@ Weather &amp; Alerts API
 
 - API version: 1.0.0
 
-- Build date: 2026-08-31T08:23:13.109827530Z[GMT]
+- Build date: 2026-08-31T08:29:58.652364882Z[GMT]
 
 - Generator version: 7.9.0
 
