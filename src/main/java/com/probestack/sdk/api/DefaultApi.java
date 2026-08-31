@@ -6,9 +6,9 @@ import com.probestack.sdk.BaseApi;
 import com.probestack.sdk.model.AlertSubscription;
 import java.math.BigDecimal;
 import com.probestack.sdk.model.CurrentWeather;
-import com.probestack.sdk.model.ForecastDay;
+import com.probestack.sdk.model.GetWeatherForecast200Response;
+import com.probestack.sdk.model.ListActiveAlerts200Response;
 import com.probestack.sdk.model.SubscribeToAlertsRequest;
-import com.probestack.sdk.model.WeatherAlert;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:29:58.652364882Z[GMT]", comments = "Generator version: 7.9.0")public class DefaultApi extends BaseApi {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:35:58.204314211Z[GMT]", comments = "Generator version: 7.9.0")public class DefaultApi extends BaseApi {
 
     public DefaultApi() {
         super(new ApiClient());
@@ -108,10 +108,10 @@ import org.springframework.http.ResponseEntity;
      * @param lat Latitude of the location (required)
      * @param lon Longitude of the location (required)
      * @param days Number of forecast days to return (1-14) (optional, default to 5)
-     * @return List&lt;ForecastDay&gt;
+     * @return GetWeatherForecast200Response
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public List<ForecastDay> getWeatherForecast(BigDecimal lat, BigDecimal lon, Integer days) throws RestClientException {
+    public GetWeatherForecast200Response getWeatherForecast(BigDecimal lat, BigDecimal lon, Integer days) throws RestClientException {
         return getWeatherForecastWithHttpInfo(lat, lon, days).getBody();
     }
 
@@ -122,10 +122,10 @@ import org.springframework.http.ResponseEntity;
      * @param lat Latitude of the location (required)
      * @param lon Longitude of the location (required)
      * @param days Number of forecast days to return (1-14) (optional, default to 5)
-     * @return ResponseEntity&lt;List&lt;ForecastDay&gt;&gt;
+     * @return ResponseEntity&lt;GetWeatherForecast200Response&gt;
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public ResponseEntity<List<ForecastDay>> getWeatherForecastWithHttpInfo(BigDecimal lat, BigDecimal lon, Integer days) throws RestClientException {
+    public ResponseEntity<GetWeatherForecast200Response> getWeatherForecastWithHttpInfo(BigDecimal lat, BigDecimal lon, Integer days) throws RestClientException {
         Object localVarPostBody = null;
         
         // verify the required parameter 'lat' is set
@@ -158,7 +158,7 @@ import org.springframework.http.ResponseEntity;
 
         String[] localVarAuthNames = new String[] {  };
 
-        ParameterizedTypeReference<List<ForecastDay>> localReturnType = new ParameterizedTypeReference<List<ForecastDay>>() {};
+        ParameterizedTypeReference<GetWeatherForecast200Response> localReturnType = new ParameterizedTypeReference<GetWeatherForecast200Response>() {};
         return apiClient.invokeAPI("/weather/forecast", HttpMethod.GET, Collections.<String, Object>emptyMap(), localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localReturnType);
     }
     /**
@@ -167,10 +167,10 @@ import org.springframework.http.ResponseEntity;
      * <p><b>200</b> - Active alerts
      * @param region Region name or code to check for active alerts (required)
      * @param severity Minimum severity to include (optional)
-     * @return List&lt;WeatherAlert&gt;
+     * @return ListActiveAlerts200Response
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public List<WeatherAlert> listActiveAlerts(String region, String severity) throws RestClientException {
+    public ListActiveAlerts200Response listActiveAlerts(String region, String severity) throws RestClientException {
         return listActiveAlertsWithHttpInfo(region, severity).getBody();
     }
 
@@ -180,10 +180,10 @@ import org.springframework.http.ResponseEntity;
      * <p><b>200</b> - Active alerts
      * @param region Region name or code to check for active alerts (required)
      * @param severity Minimum severity to include (optional)
-     * @return ResponseEntity&lt;List&lt;WeatherAlert&gt;&gt;
+     * @return ResponseEntity&lt;ListActiveAlerts200Response&gt;
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public ResponseEntity<List<WeatherAlert>> listActiveAlertsWithHttpInfo(String region, String severity) throws RestClientException {
+    public ResponseEntity<ListActiveAlerts200Response> listActiveAlertsWithHttpInfo(String region, String severity) throws RestClientException {
         Object localVarPostBody = null;
         
         // verify the required parameter 'region' is set
@@ -210,7 +210,7 @@ import org.springframework.http.ResponseEntity;
 
         String[] localVarAuthNames = new String[] {  };
 
-        ParameterizedTypeReference<List<WeatherAlert>> localReturnType = new ParameterizedTypeReference<List<WeatherAlert>>() {};
+        ParameterizedTypeReference<ListActiveAlerts200Response> localReturnType = new ParameterizedTypeReference<ListActiveAlerts200Response>() {};
         return apiClient.invokeAPI("/alerts", HttpMethod.GET, Collections.<String, Object>emptyMap(), localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAccept, localVarContentType, localVarAuthNames, localReturnType);
     }
     /**
