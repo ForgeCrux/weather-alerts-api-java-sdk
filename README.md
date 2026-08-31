@@ -2,9 +2,9 @@
 
 Weather &amp; Alerts API
 
-- API version: 1.0.0
+- API version: 2.0.0
 
-- Build date: 2026-08-31T08:29:58.652364882Z[GMT]
+- Build date: 2026-08-31T08:35:58.204314211Z[GMT]
 
 - Generator version: 7.9.0
 
@@ -45,7 +45,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>org.openapitools</groupId>
   <artifactId>openapi-java-client</artifactId>
-  <version>1.0.0</version>
+  <version>2.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -61,7 +61,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "org.openapitools:openapi-java-client:1.0.0"
+     implementation "org.openapitools:openapi-java-client:2.0.0"
   }
 ```
 
@@ -75,7 +75,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/openapi-java-client-1.0.0.jar`
+- `target/openapi-java-client-2.0.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -132,6 +132,8 @@ Class | Method | HTTP request | Description
  - [AlertSubscription](docs/AlertSubscription.md)
  - [CurrentWeather](docs/CurrentWeather.md)
  - [ForecastDay](docs/ForecastDay.md)
+ - [GetWeatherForecast200Response](docs/GetWeatherForecast200Response.md)
+ - [ListActiveAlerts200Response](docs/ListActiveAlerts200Response.md)
  - [SubscribeToAlertsRequest](docs/SubscribeToAlertsRequest.md)
  - [WeatherAlert](docs/WeatherAlert.md)
 
