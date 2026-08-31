@@ -1,0 +1,295 @@
+openapi: 3.0.3
+info:
+  description: |
+    Read-heavy weather/forecast/alerts API — a classic "tool" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server.
+  title: Weather & Alerts API
+  version: 1.0.0
+servers:
+- url: https://api.weather.example.com/v2
+paths:
+  /weather/current:
+    get:
+      description: "Returns the current temperature, conditions, and wind for a latitude/longitude\
+        \ pair."
+      operationId: getCurrentWeather
+      parameters:
+      - description: Latitude of the location
+        explode: true
+        in: query
+        name: lat
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Longitude of the location
+        explode: true
+        in: query
+        name: lon
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Unit system for the response
+        explode: true
+        in: query
+        name: units
+        required: false
+        schema:
+          default: METRIC
+          enum:
+          - METRIC
+          - IMPERIAL
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentWeather"
+          description: Current weather
+      summary: Get current weather for a location
+      x-accepts:
+      - application/json
+  /weather/forecast:
+    get:
+      description: Returns a daily forecast for the given location for up to 14 days.
+      operationId: getWeatherForecast
+      parameters:
+      - description: Latitude of the location
+        explode: true
+        in: query
+        name: lat
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Longitude of the location
+        explode: true
+        in: query
+        name: lon
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Number of forecast days to return (1-14)
+        explode: true
+        in: query
+        name: days
+        required: false
+        schema:
+          default: 5
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/ForecastDay"
+                type: array
+          description: Forecast days
+      summary: Get a multi-day weather forecast
+      x-accepts:
+      - application/json
+  /alerts:
+    get:
+      description: "Returns currently active severe-weather alerts (storms, floods,\
+        \ heat) for a named region."
+      operationId: listActiveAlerts
+      parameters:
+      - description: Region name or code to check for active alerts
+        explode: true
+        in: query
+        name: region
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: Minimum severity to include
+        explode: true
+        in: query
+        name: severity
+        required: false
+        schema:
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/WeatherAlert"
+                type: array
+          description: Active alerts
+      summary: List active weather alerts for a region
+      x-accepts:
+      - application/json
+  /alerts/subscriptions:
+    post:
+      description: Registers an email address to receive notifications when new alerts
+        are issued for a region.
+      operationId: subscribeToAlerts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/subscribeToAlerts_request"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlertSubscription"
+          description: Subscription created
+      summary: Subscribe an email to weather alerts for a region
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /alerts/subscriptions/{subscriptionId}:
+    delete:
+      description: Removes an existing alert subscription by its ID.
+      operationId: unsubscribeFromAlerts
+      parameters:
+      - description: Unique ID of the subscription to cancel
+        explode: false
+        in: path
+        name: subscriptionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Subscription cancelled
+      summary: Cancel an alert subscription
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    CurrentWeather:
+      example:
+        condition: condition
+        temperatureC: 0.8008281904610115
+        observedAt: 2000-01-23T04:56:07.000+00:00
+        windSpeedKph: 6.027456183070403
+        location: location
+        humidityPercent: 1
+      properties:
+        location:
+          type: string
+        temperatureC:
+          type: number
+        condition:
+          type: string
+        windSpeedKph:
+          type: number
+        humidityPercent:
+          type: integer
+        observedAt:
+          format: date-time
+          type: string
+      type: object
+    ForecastDay:
+      example:
+        date: 2000-01-23
+        condition: condition
+        precipitationChancePercent: 1
+        highC: 0.8008281904610115
+        lowC: 6.027456183070403
+      properties:
+        date:
+          format: date
+          type: string
+        highC:
+          type: number
+        lowC:
+          type: number
+        condition:
+          type: string
+        precipitationChancePercent:
+          type: integer
+      type: object
+    WeatherAlert:
+      example:
+        severity: MINOR
+        id: id
+        issuedAt: 2000-01-23T04:56:07.000+00:00
+        title: title
+        region: region
+        expiresAt: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        severity:
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
+        region:
+          type: string
+        issuedAt:
+          format: date-time
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+      type: object
+    AlertSubscription:
+      example:
+        minSeverity: MINOR
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        id: id
+        region: region
+        email: email
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        region:
+          type: string
+        minSeverity:
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+      type: object
+    subscribeToAlerts_request:
+      properties:
+        email:
+          description: Email address to notify
+          type: string
+        region:
+          description: Region name or code to watch
+          type: string
+        minSeverity:
+          description: Only notify for alerts at or above this severity
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
+      required:
+      - email
+      - region
+      type: object
+
