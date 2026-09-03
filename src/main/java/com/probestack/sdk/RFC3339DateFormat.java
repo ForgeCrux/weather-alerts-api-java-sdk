@@ -1,6 +1,6 @@
 /*
- * Weather & Alerts API
- * Read-heavy weather/forecast/alerts API — a classic \"tool\" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server. 
+ * Task Manager API
+ * A simple task management API used to end-to-end test MCP generation (spec parse, tools, mock server, contract testing, code analysis).
  *
  * The version of the OpenAPI document: 2.0.0
  * 
@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:35:58.204314211Z[GMT]", comments = "Generator version: 7.9.0")public class RFC3339DateFormat extends DateFormat {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-02T04:51:02.135816264Z[GMT]", comments = "Generator version: 7.9.0")public class RFC3339DateFormat extends DateFormat {
   private static final long serialVersionUID = 1L;
   private static final TimeZone TIMEZONE_Z = TimeZone.getTimeZone("UTC");
 
