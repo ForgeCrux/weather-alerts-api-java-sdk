@@ -1,6 +1,6 @@
 /*
- * Weather & Alerts API
- * Read-heavy weather/forecast/alerts API — a classic \"tool\" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server. 
+ * Task Manager API
+ * A simple task management API used to end-to-end test MCP generation (spec parse, tools, mock server, contract testing, code analysis).
  *
  * The version of the OpenAPI document: 2.0.0
  * 
@@ -13,12 +13,11 @@
 
 package com.probestack.sdk.api;
 
-import com.probestack.sdk.model.AlertSubscription;
-import java.math.BigDecimal;
-import com.probestack.sdk.model.CurrentWeather;
-import com.probestack.sdk.model.GetWeatherForecast200Response;
-import com.probestack.sdk.model.ListActiveAlerts200Response;
-import com.probestack.sdk.model.SubscribeToAlertsRequest;
+import com.probestack.sdk.model.AddTaskCommentRequest;
+import com.probestack.sdk.model.CreateTaskRequest;
+import com.probestack.sdk.model.ListTasks200Response;
+import com.probestack.sdk.model.Task;
+import com.probestack.sdk.model.UpdateTaskRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -40,91 +39,106 @@ class DefaultApiTest {
 
     
     /**
-     * Get current weather for a location
+     * Add a comment to a task
      *
-     * Returns the current temperature, conditions, and wind for a latitude/longitude pair.
+     * Adds a new comment with optional tags to the specified task&#39;s activity log.
      *
      * @throws RestClientException
      *          if the Api call fails
      */
     @Test
-    void getCurrentWeatherTest() {
-        BigDecimal lat = null;
-        BigDecimal lon = null;
-        String units = null;
+    void addTaskCommentTest() {
+        String taskId = null;
+        AddTaskCommentRequest addTaskCommentRequest = null;
 
-        CurrentWeather response = api.getCurrentWeather(lat, lon, units);
+        api.addTaskComment(taskId, addTaskCommentRequest);
 
         // TODO: test validations
     }
     
     /**
-     * Get a multi-day weather forecast
+     * Create a new task
      *
-     * Returns a daily forecast for the given location for up to 14 days.
+     * Creates a new task with a title and optional description, assignee, priority and due date.
      *
      * @throws RestClientException
      *          if the Api call fails
      */
     @Test
-    void getWeatherForecastTest() {
-        BigDecimal lat = null;
-        BigDecimal lon = null;
-        Integer days = null;
+    void createTaskTest() {
+        CreateTaskRequest createTaskRequest = null;
 
-        GetWeatherForecast200Response response = api.getWeatherForecast(lat, lon, days);
+        Task response = api.createTask(createTaskRequest);
 
         // TODO: test validations
     }
     
     /**
-     * List active weather alerts for a region
+     * Delete a task
      *
-     * Returns currently active severe-weather alerts (storms, floods, heat) for a named region.
+     * Permanently deletes a task by ID.
      *
      * @throws RestClientException
      *          if the Api call fails
      */
     @Test
-    void listActiveAlertsTest() {
-        String region = null;
-        String severity = null;
+    void deleteTaskTest() {
+        String taskId = null;
 
-        ListActiveAlerts200Response response = api.listActiveAlerts(region, severity);
+        api.deleteTask(taskId);
 
         // TODO: test validations
     }
     
     /**
-     * Subscribe an email to weather alerts for a region
+     * Get a task by ID
      *
-     * Registers an email address to receive notifications when new alerts are issued for a region.
+     * Retrieves a single task by its unique identifier.
      *
      * @throws RestClientException
      *          if the Api call fails
      */
     @Test
-    void subscribeToAlertsTest() {
-        SubscribeToAlertsRequest subscribeToAlertsRequest = null;
+    void getTaskByIdTest() {
+        String taskId = null;
 
-        AlertSubscription response = api.subscribeToAlerts(subscribeToAlertsRequest);
+        Task response = api.getTaskById(taskId);
 
         // TODO: test validations
     }
     
     /**
-     * Cancel an alert subscription
+     * List all tasks
      *
-     * Removes an existing alert subscription by its ID.
+     * Returns tasks, optionally filtered by status, with an optional page-size limit.
      *
      * @throws RestClientException
      *          if the Api call fails
      */
     @Test
-    void unsubscribeFromAlertsTest() {
-        String subscriptionId = null;
+    void listTasksTest() {
+        String status = null;
+        Integer limit = null;
 
-        api.unsubscribeFromAlerts(subscriptionId);
+        ListTasks200Response response = api.listTasks(status, limit);
+
+        // TODO: test validations
+    }
+    
+    /**
+     * Update an existing task
+     *
+     * Updates fields of an existing task, including its status and completion flag.
+     *
+     * @throws RestClientException
+     *          if the Api call fails
+     */
+    @Test
+    void updateTaskTest() {
+        String taskId = null;
+        UpdateTaskRequest updateTaskRequest = null;
+
+        Task response = api.updateTask(taskId, updateTaskRequest);
 
         // TODO: test validations
     }
