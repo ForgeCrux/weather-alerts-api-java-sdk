@@ -1,37 +1,84 @@
 openapi: 3.0.3
 info:
-  description: "A simple task management API used to end-to-end test MCP generation\
-    \ (spec parse, tools, mock server, contract testing, code analysis)."
-  title: Task Manager API
+  description: |
+    Read-heavy weather/forecast/alerts API — a classic "tool" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server.
+  title: Weather & Alerts API
   version: 2.0.0
 servers:
-- url: https://api.taskmanager.example.com/v2
+- url: https://api.weather.example.com/v2
 paths:
-  /tasks:
+  /weather/current:
     get:
-      description: "Returns tasks, optionally filtered by status, with an optional\
-        \ page-size limit."
-      operationId: listTasks
+      description: "Returns the current temperature, conditions, and wind for a latitude/longitude\
+        \ pair."
+      operationId: getCurrentWeather
       parameters:
-      - description: Filter tasks by status
+      - description: Latitude of the location
         explode: true
         in: query
-        name: status
+        name: lat
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Longitude of the location
+        explode: true
+        in: query
+        name: lon
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Unit system for the response
+        explode: true
+        in: query
+        name: units
         required: false
         schema:
+          default: METRIC
           enum:
-          - OPEN
-          - IN_PROGRESS
-          - DONE
+          - METRIC
+          - IMPERIAL
           type: string
         style: form
-      - description: Maximum number of tasks to return
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CurrentWeather"
+          description: Current weather
+      summary: Get current weather for a location
+      x-accepts:
+      - application/json
+  /weather/forecast:
+    get:
+      description: Returns a daily forecast for the given location for up to 14 days.
+      operationId: getWeatherForecast
+      parameters:
+      - description: Latitude of the location
         explode: true
         in: query
-        name: limit
+        name: lat
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Longitude of the location
+        explode: true
+        in: query
+        name: lon
+        required: true
+        schema:
+          type: number
+        style: form
+      - description: Number of forecast days to return (1-14)
+        explode: true
+        in: query
+        name: days
         required: false
         schema:
-          default: 20
+          default: 5
           type: integer
         style: form
       responses:
@@ -39,268 +86,246 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listTasks_200_response"
-          description: A list of tasks
-      summary: List all tasks
+                $ref: "#/components/schemas/getWeatherForecast_200_response"
+          description: Forecast days
+      summary: Get a multi-day weather forecast
       x-accepts:
       - application/json
+  /alerts:
+    get:
+      description: "Returns currently active severe-weather alerts (storms, floods,\
+        \ heat) for a named region."
+      operationId: listActiveAlerts
+      parameters:
+      - description: Region name or code to check for active alerts
+        explode: true
+        in: query
+        name: region
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: Minimum severity to include
+        explode: true
+        in: query
+        name: severity
+        required: false
+        schema:
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listActiveAlerts_200_response"
+          description: Active alerts
+      summary: List active weather alerts for a region
+      x-accepts:
+      - application/json
+  /alerts/subscriptions:
     post:
-      description: "Creates a new task with a title and optional description, assignee,\
-        \ priority and due date."
-      operationId: createTask
+      description: Registers an email address to receive notifications when new alerts
+        are issued for a region.
+      operationId: subscribeToAlerts
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/createTask_request"
+              $ref: "#/components/schemas/subscribeToAlerts_request"
         required: true
       responses:
         "201":
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Task"
-          description: Task created
-      summary: Create a new task
+                $ref: "#/components/schemas/AlertSubscription"
+          description: Subscription created
+      summary: Subscribe an email to weather alerts for a region
       x-content-type: application/json
       x-accepts:
       - application/json
-  /tasks/{taskId}:
+  /alerts/subscriptions/{subscriptionId}:
     delete:
-      description: Permanently deletes a task by ID.
-      operationId: deleteTask
+      description: Removes an existing alert subscription by its ID.
+      operationId: unsubscribeFromAlerts
       parameters:
-      - description: Unique ID of the task to delete
+      - description: Unique ID of the subscription to cancel
         explode: false
         in: path
-        name: taskId
+        name: subscriptionId
         required: true
         schema:
           type: string
         style: simple
       responses:
         "204":
-          description: Task deleted successfully
-      summary: Delete a task
-      x-accepts:
-      - application/json
-    get:
-      description: Retrieves a single task by its unique identifier.
-      operationId: getTaskById
-      parameters:
-      - description: Unique ID of the task
-        explode: false
-        in: path
-        name: taskId
-        required: true
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-          description: Task found
-        "404":
-          description: Task not found
-      summary: Get a task by ID
-      x-accepts:
-      - application/json
-    put:
-      description: "Updates fields of an existing task, including its status and completion\
-        \ flag."
-      operationId: updateTask
-      parameters:
-      - description: Unique ID of the task to update
-        explode: false
-        in: path
-        name: taskId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/updateTask_request"
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-          description: Task updated
-      summary: Update an existing task
-      x-content-type: application/json
-      x-accepts:
-      - application/json
-  /tasks/{taskId}/comments:
-    post:
-      description: Adds a new comment with optional tags to the specified task's activity
-        log.
-      operationId: addTaskComment
-      parameters:
-      - description: Unique ID of the task
-        explode: false
-        in: path
-        name: taskId
-        required: true
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/addTaskComment_request"
-        required: true
-      responses:
-        "201":
-          description: Comment added
-      summary: Add a comment to a task
-      x-content-type: application/json
+          description: Subscription cancelled
+      summary: Cancel an alert subscription
       x-accepts:
       - application/json
 components:
   schemas:
-    Task:
+    CurrentWeather:
       example:
-        createdAt: 2000-01-23T04:56:07.000+00:00
-        dueDate: 2000-01-23
-        description: description
+        condition: condition
+        temperatureC: 0.8008281904610115
+        observedAt: 2000-01-23T04:56:07.000+00:00
+        windSpeedKph: 6.027456183070403
+        location: location
+        humidityPercent: 1
+      properties:
+        location:
+          type: string
+        temperatureC:
+          type: number
+        condition:
+          type: string
+        windSpeedKph:
+          type: number
+        humidityPercent:
+          type: integer
+        observedAt:
+          format: date-time
+          type: string
+      type: object
+    ForecastDay:
+      example:
+        date: 2000-01-23
+        condition: condition
+        precipitationChancePercent: 1
+        highC: 0.8008281904610115
+        lowC: 6.027456183070403
+      properties:
+        date:
+          format: date
+          type: string
+        highC:
+          type: number
+        lowC:
+          type: number
+        condition:
+          type: string
+        precipitationChancePercent:
+          type: integer
+      type: object
+    WeatherAlert:
+      example:
+        severity: MINOR
         id: id
-        assignee: assignee
-        completed: true
+        issuedAt: 2000-01-23T04:56:07.000+00:00
         title: title
-        priority: LOW
-        status: OPEN
+        region: region
+        expiresAt: 2000-01-23T04:56:07.000+00:00
       properties:
         id:
           type: string
         title:
           type: string
-        description:
-          type: string
-        status:
+        severity:
           enum:
-          - OPEN
-          - IN_PROGRESS
-          - DONE
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
           type: string
-        priority:
+        region:
+          type: string
+        issuedAt:
+          format: date-time
+          type: string
+        expiresAt:
+          format: date-time
+          type: string
+      type: object
+    AlertSubscription:
+      example:
+        minSeverity: MINOR
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        id: id
+        region: region
+        email: email
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        region:
+          type: string
+        minSeverity:
           enum:
-          - LOW
-          - MEDIUM
-          - HIGH
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
           type: string
-        assignee:
-          type: string
-        dueDate:
-          format: date
-          type: string
-        completed:
-          type: boolean
         createdAt:
           format: date-time
           type: string
       type: object
-    listTasks_200_response:
+    getWeatherForecast_200_response:
       example:
-        data:
-        - createdAt: 2000-01-23T04:56:07.000+00:00
-          dueDate: 2000-01-23
-          description: description
-          id: id
-          assignee: assignee
-          completed: true
-          title: title
-          priority: LOW
-          status: OPEN
-        - createdAt: 2000-01-23T04:56:07.000+00:00
-          dueDate: 2000-01-23
-          description: description
-          id: id
-          assignee: assignee
-          completed: true
-          title: title
-          priority: LOW
-          status: OPEN
+        forecastDays:
+        - date: 2000-01-23
+          condition: condition
+          precipitationChancePercent: 1
+          highC: 0.8008281904610115
+          lowC: 6.027456183070403
+        - date: 2000-01-23
+          condition: condition
+          precipitationChancePercent: 1
+          highC: 0.8008281904610115
+          lowC: 6.027456183070403
       properties:
-        data:
+        forecastDays:
           items:
-            $ref: "#/components/schemas/Task"
+            $ref: "#/components/schemas/ForecastDay"
           type: array
-      required:
-      - data
       type: object
-    createTask_request:
+    listActiveAlerts_200_response:
+      example:
+        alerts:
+        - severity: MINOR
+          id: id
+          issuedAt: 2000-01-23T04:56:07.000+00:00
+          title: title
+          region: region
+          expiresAt: 2000-01-23T04:56:07.000+00:00
+        - severity: MINOR
+          id: id
+          issuedAt: 2000-01-23T04:56:07.000+00:00
+          title: title
+          region: region
+          expiresAt: 2000-01-23T04:56:07.000+00:00
       properties:
-        title:
-          description: Short title of the task
-          type: string
-        description:
-          description: Longer description of the task
-          type: string
-        assignee:
-          description: Email of the person assigned to the task
-          type: string
-        priority:
-          description: Priority level of the task
-          enum:
-          - LOW
-          - MEDIUM
-          - HIGH
-          type: string
-        dueDate:
-          description: Due date for the task (YYYY-MM-DD)
-          format: date
-          type: string
-      required:
-      - title
-      type: object
-    updateTask_request:
-      properties:
-        title:
-          description: Updated title
-          type: string
-        status:
-          description: New status for the task
-          enum:
-          - OPEN
-          - IN_PROGRESS
-          - DONE
-          type: string
-        priority:
-          enum:
-          - LOW
-          - MEDIUM
-          - HIGH
-          type: string
-        completed:
-          description: Whether the task is fully completed
-          type: boolean
-      required:
-      - status
-      type: object
-    addTaskComment_request:
-      properties:
-        message:
-          description: Comment text
-          type: string
-        author:
-          description: Email of the comment author
-          type: string
-        tags:
-          description: Optional tags attached to the comment
+        alerts:
           items:
-            type: string
+            $ref: "#/components/schemas/WeatherAlert"
           type: array
+      type: object
+    subscribeToAlerts_request:
+      properties:
+        email:
+          description: Email address to notify
+          type: string
+        region:
+          description: Region name or code to watch
+          type: string
+        minSeverity:
+          description: Only notify for alerts at or above this severity
+          enum:
+          - MINOR
+          - MODERATE
+          - SEVERE
+          - EXTREME
+          type: string
       required:
-      - author
-      - message
+      - email
+      - region
       type: object
 
