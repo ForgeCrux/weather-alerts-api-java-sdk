@@ -1,6 +1,6 @@
 /*
- * Task Manager API
- * A simple task management API used to end-to-end test MCP generation (spec parse, tools, mock server, contract testing, code analysis).
+ * Weather & Alerts API
+ * Read-heavy weather/forecast/alerts API — a classic \"tool\" style MCP server (an LLM assistant calling out for live external data) plus one write operation (subscribe) and one delete (unsubscribe) to exercise both GET-only tools and mutation tools in the same server. 
  *
  * The version of the OpenAPI document: 2.0.0
  * 
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-02T04:51:02.135816264Z[GMT]", comments = "Generator version: 7.9.0")public class HttpBearerAuth implements Authentication {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-03T07:38:01.001853780Z[GMT]", comments = "Generator version: 7.9.0")public class HttpBearerAuth implements Authentication {
     private final String scheme;
     private Supplier<String> tokenSupplier;
 
