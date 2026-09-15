@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   GetWeatherForecast200Response.JSON_PROPERTY_FORECAST_DAYS
 })
 @JsonTypeName("getWeatherForecast_200_response")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-08-31T08:35:58.204314211Z[GMT]", comments = "Generator version: 7.9.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-03T07:38:01.001853780Z[GMT]", comments = "Generator version: 7.9.0")
 public class GetWeatherForecast200Response {
   public static final String JSON_PROPERTY_FORECAST_DAYS = "forecastDays";
   private List<ForecastDay> forecastDays = new ArrayList<>();
