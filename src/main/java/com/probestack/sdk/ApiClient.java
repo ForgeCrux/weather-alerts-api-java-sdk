@@ -71,7 +71,7 @@ import java.time.OffsetDateTime;
 
 import com.probestack.sdk.auth.Authentication;
 
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-03T07:38:01.001853780Z[GMT]", comments = "Generator version: 7.9.0")public class ApiClient extends JavaTimeFormatter {
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-21T06:27:09.379277030Z[GMT]", comments = "Generator version: 7.9.0")public class ApiClient extends JavaTimeFormatter {
     public enum CollectionFormat {
         CSV(","), TSV("\t"), SSV(" "), PIPES("|"), MULTI(null);
 
