@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
   ListActiveAlerts200Response.JSON_PROPERTY_ALERTS
 })
 @JsonTypeName("listActiveAlerts_200_response")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-03T07:38:01.001853780Z[GMT]", comments = "Generator version: 7.9.0")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-09-21T06:27:09.379277030Z[GMT]", comments = "Generator version: 7.9.0")
 public class ListActiveAlerts200Response {
   public static final String JSON_PROPERTY_ALERTS = "alerts";
   private List<WeatherAlert> alerts = new ArrayList<>();
