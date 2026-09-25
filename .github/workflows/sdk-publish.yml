@@ -1,71 +1,52 @@
-name: SDK Publish
+# Publication bff8ac92-9c4e-4620-9004-916382b6b228
+name: SDK Bundle Publish
 on:
   push:
     paths:
       - '.github/workflows/sdk-publish.yml'
-concurrency:
-  group: sdk-publish-${{ github.repository }}
-  cancel-in-progress: true
 permissions:
   contents: read
   id-token: write
-  actions: write
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SOURCE_BUNDLE: "gs://probestack-forgestudio-sdk/ForgeStudio/Credit-Card/6ab0ce3a93bb3f70b75bb27f-Credit-Card-java-sdk.zip"
+      BUNDLE_SHA256: "d9776cb086cd0f949c38cd5aa4d6b26bee5f25685c6bd902c9ab62c13dadbaf0"
+      PACKAGE_VERSION: "1.0.0"
+      PACKAGE_URL: "gs://sdk/1.0.0/sdk-1.0.0.zip"
+      DESTINATION: "gs://sdk/1.0.0/sdk-1.0.0.zip"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - name: Set version
-        run: mvn -B -q versions:set -DnewVersion=2.0.0 -DgenerateBackupPoms=false
-      - name: Package
-        run: |
-          mvn -B -q package -DskipTests
-          cp "$(ls target/*.jar | grep -v sources.jar | grep -v javadoc.jar | head -n1)" sdk-2.0.0.jar
       - uses: google-github-actions/auth@v2
+        id: auth
         with:
-          workload_identity_provider: projects/861433193200/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: github-actions-forgecrux@probestack-prod.iam.gserviceaccount.com
+          workload_identity_provider: "projects/861433193200/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "github-actions-forgecrux@probestack-prod.iam.gserviceaccount.com"
           token_format: access_token
-      - uses: google-github-actions/upload-cloud-storage@v2
-        with:
-          path: sdk-2.0.0.jar
-          destination: forgestudio/sdks/2.0.0
-      - name: Print Published Package Banner
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Download and verify selected SDK bundle
+        shell: bash
         run: |
-          echo ""
-          echo "================================================================"
-          echo "  SDK published: sdk-2.0.0.jar"
-          echo "----------------------------------------------------------------"
-          echo "  Package URL : gs://forgestudio/sdks/2.0.0/sdk-2.0.0.jar"
-          echo "================================================================"
-          echo ""
-      - name: Write Published Package to Step Summary
+          set -euo pipefail
+          gcloud storage cp "$SOURCE_BUNDLE" bundle.zip
+          printf '%s  bundle.zip\n' "$BUNDLE_SHA256" | sha256sum --check --strict
+      - name: Deploy verified ZIP bundle
+        shell: bash
         run: |
-          {
-            echo "## SDK published"
-            echo ""
-            echo "| | |"
-            echo "| --- | --- |"
-            echo "| **Package** | [\`sdk-2.0.0.jar\`](gs://forgestudio/sdks/2.0.0/sdk-2.0.0.jar) |"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Save Published Package as Artifact File
+          set -euo pipefail
+          upload_args=(--if-generation-match=0 --content-type=application/zip)
+          gcloud storage cp bundle.zip "$DESTINATION" "${upload_args[@]}"
+      - name: Published bundle
+        shell: bash
         run: |
-          cat > "${{ github.workspace }}/.publish-info.json" <<EOF
-          {
-            "package": "sdk-2.0.0.jar",
-            "url": "gs://forgestudio/sdks/2.0.0/sdk-2.0.0.jar",
-            "sha": "${{ github.sha }}",
-            "publishedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          EOF
-      - name: Upload Published Package Artifact
+          printf 'Package: %s\nSource bundle SHA-256: %s\n' "$PACKAGE_URL" "$BUNDLE_SHA256" >> "$GITHUB_STEP_SUMMARY"
+          jq -n --arg url "$PACKAGE_URL" --arg sha "$BUNDLE_SHA256" '{url: $url, artifactSha256: $sha}' > .publish-info.json
+      - name: Upload publication receipt
         uses: actions/upload-artifact@v4
         with:
           name: publish-info
-          path: ${{ github.workspace }}/.publish-info.json
-          if-no-files-found: ignore
+          path: .publish-info.json
+          include-hidden-files: true
         continue-on-error: true
